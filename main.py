@@ -1,46 +1,30 @@
-# -*- coding: utf-8 -*-
-import json
-from os.path import isfile
-from flask import Flask, render_template
+from flask import Flask
+from function import get_settings, get_candidate_by_id
 
-CANDIDATES_FILE_PATH = "candidates.json"
-SETTINGS_FILE_PATH = "settings.json"
-
-
-def get_candidates():
-    if isfile(CANDIDATES_FILE_PATH):
-        with open(CANDIDATES_FILE_PATH,encoding="utf-8") as file:
-            return json.load(file)
-    else:
-        print("Файл не найден")
-        return {}
-
-
-def get_settings():
-    if isfile(SETTINGS_FILE_PATH):
-        with open(SETTINGS_FILE_PATH) as file:
-            return json.load(file)
-    else:
-        print("Файл не найден")
-        return {}
-
+settings = get_settings()
 
 app = Flask(__name__)
-
-candidates = get_candidates()
-settings = get_settings()
 
 
 @app.route('/')
 def page_index():
-    return render_template("index.html", **settings)
+    online = settings.get("online")
+    if online:
+        return "Приложение работает"
+    else:
+        return "Приложение не работает"
 
 
 @app.route('/candidate/<int:x>')
 def page_candidate(x):
-    for candidate in candidates:
-        if candidate.get("id") == x:
-            return render_template("candidate.html", **candidate)
+    candidate = get_candidate_by_id(x)
+
+    return f"""
+           <h1>{candidate["name"]}</h1>
+           <p>{candidate["position"]}</p>
+           <img src="{candidate["picture"]}" width=200/>
+           <p>{candidate["skills"]}</p>
+           """
 
 
 app.run()
