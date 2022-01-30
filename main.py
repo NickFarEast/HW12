@@ -9,7 +9,7 @@ SETTINGS_FILE_PATH = "settings.json"
 
 def get_candidates():
     if isfile(CANDIDATES_FILE_PATH):
-        with open(CANDIDATES_FILE_PATH) as file:
+        with open(CANDIDATES_FILE_PATH,encoding="utf-8") as file:
             return json.load(file)
     else:
         print("Файл не найден")
@@ -35,10 +35,12 @@ settings = get_settings()
 def page_index():
     return render_template("index.html", **settings)
 
-@app.route('candidate/<int:x>')
-def page_candidate(x):
 
-    return render_template("candidate.html", candidates=candidates)
+@app.route('/candidate/<int:x>')
+def page_candidate(x):
+    for candidate in candidates:
+        if candidate.get("id") == x:
+            return render_template("candidate.html", **candidate)
 
 
 app.run()
