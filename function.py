@@ -42,3 +42,49 @@ def get_candidate_by_id(x):
     for candidate in candidates:
         if candidate.get("id") == x:
             return candidate
+
+
+def search_candidate_by_name(name):
+    """
+    Функция для поиска кандидатов в списке по имени.
+    :param name: Имя по которому ищем кандидата
+    :return: Возвращаем список кандидатов с искомым именем
+    """
+
+    settings = get_settings()
+    case_sensitive = settings["case-sensitive"]
+    candidates = get_candidates()
+    candidates_match = []
+
+    for candidate in candidates:
+
+        if name in candidate["name"]:
+            candidates_match.append(candidate)
+            continue
+
+        if not case_sensitive:
+            if name.lower() in candidate["name"].lower():
+                candidates_match.append(candidate)
+
+
+def search_candidate_by_skill(skill_name):
+    """
+    Функция для поиска кандидатов из списка по навыкам.
+    :param skill_name: название навыка
+    :return: возвращает список кандидатов с искомым навыком
+    """
+    settings = get_settings()
+    limit = settings["limit"]
+    candidates = get_candidates()
+    candidates_match = []
+
+    skill_name = skill_name.lower()
+
+    for candidate in candidates:
+
+        skills = candidate["skills"].lower().split(", ")
+
+        if skill_name in skills:
+            candidates_match.append(candidate)
+
+    return candidates_match[:limit]
