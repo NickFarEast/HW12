@@ -24,33 +24,22 @@ def page_list():
     return render_template("list.html", candidates=candidates)
 
 
-@app.route("/search")
+@app.route('/search/')
 def page_search_by_name():
     name = request.args.get("name", "")
     candidates = search_candidate_by_name(name)
     candidates_count = len(candidates)
 
-    page_content = f"<h1>Найдено кандидатов {candidates_count}</h1>"
-
-    for candidate in candidates:
-        page_content += f"""
-        <p><a href="/candidate/{candidate["id"]}"> {candidate["name"]}</a></p>
-        """
-    return page_content
+    return render_template("search.html", candidates=candidates, candidates_count=candidates_count)
 
 
 @app.route("/skill/<skill_name>")
 def page_search_by_skill(skill_name):
     candidates = search_candidate_by_skill(skill_name)
     candidates_count = len(candidates)
+    skill = skill_name
 
-    page_content = f"<h1>Найдено со скиллом {skill_name}: {candidates_count}</h1>"
-
-    for candidate in candidates:
-        page_content += f"""
-        <p><a href="/candidate/{candidate["id"]}"> {candidate["name"]}</a></p>
-        """
-    return page_content
+    return render_template("search.html", candidates=candidates, candidates_count=candidates_count, skill=skill)
 
 
 app.run()

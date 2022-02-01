@@ -66,6 +66,7 @@ def search_candidate_by_name(name):
             if name.lower() in candidate["name"].lower():
                 candidates_match.append(candidate)
 
+    return candidates_match
 
 def search_candidate_by_skill(skill_name):
     """
